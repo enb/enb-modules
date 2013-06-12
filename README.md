@@ -1,7 +1,25 @@
 enb-modules
 ===========
 
-Предоставляет технологию `deps-with-modules`.
+Предоставляет технологии `prepend-modules` и `deps-with-modules`.
+
+prepend-modules
+===============
+
+Добавляет js-код для работы модульной системы
+
+**Опции**
+* *String* **source** – Исходный source. Обязательная опция.
+* *String* **target** — Результирующий target. По умолчанию — `?.js`.
+
+**Пример**
+
+```javascript
+nodeConfig.addTech([ require('enb-modules/techs/prepend-modules'), {
+  target: '?.{lang}.js',
+  source: '?.{lang}.pre.js'
+} ]);
+```
 
 deps-with-modules
 =================
@@ -29,23 +47,5 @@ nodeConfig.addTech(require('enb-modules/techs/deps-with-modules'));
 nodeConfig.addTech([ require('enb-modules/techs/deps-with-modules'), {
   bemdeclTarget: 'search.bemdecl.js',
   depsTarget: 'search.deps.js'
-} ]);
-```
-
-prepend-modules
-===============
-
-Добавляет js-код для работы модульной системы
-
-**Опции**
-* *String* **source** – Исходный source. Обязательная опция.
-* *String* **target** — Результирующий target. По умолчанию — `?.js`.
-
-**Пример**
-
-```javascript
-nodeConfig.addTech([ require('enb-modules/techs/prepend-modules'), {
-  target: '?.{lang}.js',
-  source: '?.{lang}.pre.js'
 } ]);
 ```
