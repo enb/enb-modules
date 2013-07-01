@@ -102,10 +102,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                     }
                 });
 
-                bemdecl.deps && bemdecl.deps.forEach(function(decl) {
-                    decl.name = decl.block;
-                    decl.modName = decl.mod;
-                    decl.modVal = decl.val;
+                bemdecl.deps && dep.normalizeDeps(bemdecl.deps).forEach(function(decl) {
                     dep.addDecl(decl);
                 });
 
