@@ -34,7 +34,8 @@ var Vow = require('vow'),
     vowFs = require('vow-fs'),
     DepsResolver = require('enb/lib/deps/deps-resolver'),
     inherit = require('inherit'),
-    modules = require('../lib/modules');
+    modules = require('../lib/modules'),
+    asyncRequire = require('enb/lib/fs/async-require');
 
 module.exports = inherit(require('enb/lib/tech/base-tech'), {
 
@@ -68,50 +69,73 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
             _this._sourceSuffixes.forEach(function(suffix) {
                 depFiles = depFiles.concat(levels.getFilesBySuffix(suffix));
             });
-            if (cache.needRebuildFile('deps-file', depsTargetPath)
-                    || cache.needRebuildFile('bemdecl-file', bemdeclSourcePath)
-                    || cache.needRebuildFileList('deps-file-list', depFiles)) {
+            if (cache.needRebuildFile('deps-file', depsTargetPath) ||
+                cache.needRebuildFile('bemdecl-file', bemdeclSourcePath) ||
+                cache.needRebuildFileList('deps-file-list', depFiles)
+            ) {
                 delete require.cache[bemdeclSourcePath];
-                var bemdecl = require(bemdeclSourcePath),
-                    dep = new ModulesDepsResolver(levels, _this._sourceSuffixes);
+                return asyncRequire(bemdeclSourcePath).then(function(bemdecl) {
+                    var decls = [];
+                    var dep = new ModulesDepsResolver(levels, _this._sourceSuffixes);
 
-                bemdecl.blocks && bemdecl.blocks.forEach(function(block) {
-                    dep.addBlock(block.name);
-                    if (block.mods) {
-                        block.mods.forEach(function(mod) {
-                            if (mod.vals) {
-                                mod.vals.forEach(function(val) {
-                                    dep.addBlock(block.name, mod.name, val.name);
-                                });
-                            }
-                        });
-                    }
-                    if (block.elems) {
-                        block.elems.forEach(function(elem){
-                            dep.addElem(block.name, elem.name);
-                            if (elem.mods) {
-                                elem.mods.forEach(function(mod) {
+                    if (bemdecl.blocks) {
+                        bemdecl.blocks.forEach(function(block) {
+                            decls.push({
+                                name: block.name
+                            });
+                            if (block.mods) {
+                                block.mods.forEach(function(mod) {
                                     if (mod.vals) {
                                         mod.vals.forEach(function(val) {
-                                            dep.addElem(block.name, elem.name, mod.name, val.name);
+                                            decls.push({
+                                                name: block.name,
+                                                modName: mod.name,
+                                                modVal: val.name
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                            if (block.elems) {
+                                block.elems.forEach(function(elem) {
+                                    decls.push({
+                                        name: block.name,
+                                        elem: elem.name
+                                    });
+                                    if (elem.mods) {
+                                        elem.mods.forEach(function(mod) {
+                                            if (mod.vals) {
+                                                mod.vals.forEach(function(val) {
+                                                    decls.push({
+                                                        name: block.name,
+                                                        elem: elem.name,
+                                                        modName: mod.name,
+                                                        modVal: val.name
+                                                    });
+                                                });
+                                            }
                                         });
                                     }
                                 });
                             }
                         });
                     }
-                });
 
-                bemdecl.deps && dep.normalizeDeps(bemdecl.deps).forEach(function(decl) {
-                    dep.addDecl(decl);
-                });
+                    if (bemdecl.deps) {
+                        decls = decls.concat(dep.normalizeDeps(bemdecl.deps));
+                    }
 
-                var resolvedDeps = dep.resolve();
-                return vowFs.write(depsTargetPath, 'exports.deps = ' + JSON.stringify(resolvedDeps, null, 4) + ';', 'utf8').then(function() {
-                    cache.cacheFileInfo('deps-file', depsTargetPath);
-                    cache.cacheFileInfo('bemdecl-file', bemdeclSourcePath);
-                    cache.cacheFileList('deps-file-list', depFiles);
-                    _this.node.resolveTarget(depsTarget, resolvedDeps);
+                    return dep.addDecls(decls).then(function() {
+                        var resolvedDeps = dep.resolve();
+                        return vowFs.write(
+                            depsTargetPath, 'exports.deps = ' + JSON.stringify(resolvedDeps, null, 4) + ';', 'utf8'
+                        ).then(function() {
+                            cache.cacheFileInfo('deps-file', depsTargetPath);
+                            cache.cacheFileInfo('bemdecl-file', bemdeclSourcePath);
+                            cache.cacheFileList('deps-file-list', depFiles);
+                            _this.node.resolveTarget(depsTarget, resolvedDeps);
+                        });
+                    });
                 });
             } else {
                 _this.node.getLogger().isValid(depsTarget);

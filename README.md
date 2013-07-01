@@ -4,7 +4,7 @@ enb-modules
 Предоставляет технологии `prepend-modules` и `deps-with-modules`.
 
 prepend-modules
-===============
+---------------
 
 Добавляет js-код для работы модульной системы
 
@@ -22,7 +22,7 @@ nodeConfig.addTech([ require('enb-modules/techs/prepend-modules'), {
 ```
 
 deps-with-modules
-=================
+-----------------
 
 Быстро собирает *deps.js*-файл на основе *levels* и *bemdecl*, раскрывая зависимости.
 При раскрытии зависимостей, использует и modules.define-декларации.
