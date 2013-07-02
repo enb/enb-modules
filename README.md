@@ -1,4 +1,4 @@
-enb-modules
+enb-modules [![Build Status](https://travis-ci.org/enb-make/enb-modules.png?branch=master)](https://travis-ci.org/enb-make/enb-modules)
 ===========
 
 Предоставляет технологии `prepend-modules` и `deps-with-modules`.
