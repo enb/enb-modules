@@ -5,9 +5,11 @@
  * Быстро собирает *deps.js*-файл на основе *levels* и *bemdecl*, раскрывая зависимости.
  * При раскрытии зависимостей, использует и modules.define-декларации.
  * Сохраняет в виде `?.deps.js`.
- * Следует использовать с осторожностью: в bem-bl не хватает зависимостей, потому проект может собраться иначе, чем с помощью bem-tools.
+ * Следует использовать с осторожностью: в bem-bl не хватает зависимостей, потому проект может собраться иначе,
+ * чем с помощью bem-tools.
  *
  * **Опции**
+ *
  * * *String* **sourceSuffixes** – Суффиксы исходных файлов, дополняющих deps'ы. По умолчанию — `['vanilla.js', 'js']`.
  * * *String* **bemdeclTarget** — Исходный bemdecl. По умолчанию — `?.bemdecl.js`.
  * * *String* **levelsTarget** — Исходный levels. По умолчанию — `?.levels`.
@@ -29,7 +31,6 @@
  * ```
  */
 var Vow = require('vow'),
-    fs = require('graceful-fs'),
     vm = require('vm'),
     vowFs = require('vow-fs'),
     DepsResolver = require('enb/lib/deps/deps-resolver'),
@@ -157,35 +158,50 @@ var ModulesDepsResolver = inherit(DepsResolver, {
         this._suffixesIndex = suffixesIndex;
     },
     getDeps: function(decl) {
-        var result = this.__base(decl), files, suffixesIndex = this._suffixesIndex;
-        if (decl.elem) {
-            files = this.levels.getElemFiles(decl.name, decl.elem, decl.modName, decl.modVal);
-        } else {
-            files = this.levels.getBlockFiles(decl.name, decl.modName, decl.modVal);
-        }
-        files = files.filter(function(file) {
-            return !!suffixesIndex[file.suffix];
-        });
-        var shouldDepsIndex = {};
-        result.shouldDeps.forEach(function(decl) {
-            shouldDepsIndex[declKey(decl)] = true;
-        });
-        files.forEach(function(file) {
-            var fileContent = fs.readFileSync(file.fullname, 'utf-8');
-            var extractedDeps = modules.extractDependencies(fileContent);
-            extractedDeps.forEach(function(decl) {
-                var key = declKey(decl);
-                if (!shouldDepsIndex[key]) {
-                    shouldDepsIndex[key] = true;
-                    result.shouldDeps.push(decl);
-                }
+        var _this = this;
+        return this.__base(decl).then(function(result) {
+            var files, suffixesIndex = this._suffixesIndex;
+            if (decl.elem) {
+                files = _this.levels.getElemFiles(decl.name, decl.elem, decl.modName, decl.modVal);
+            } else {
+                files = _this.levels.getBlockFiles(decl.name, decl.modName, decl.modVal);
+            }
+            files = files.filter(function(file) {
+                return !!suffixesIndex[file.suffix];
             });
+            var shouldDepsIndex = {};
+            result.shouldDeps.forEach(function(decl) {
+                shouldDepsIndex[declKey(decl)] = true;
+            });
+            function keepWorking(file) {
+                return vowFs.read(file.fullname, 'utf8').then(function(fileContent) {
+                    var extractedDeps = modules.extractDependencies(fileContent);
+                    extractedDeps.forEach(function(decl) {
+                        var key = declKey(decl);
+                        if (!shouldDepsIndex[key]) {
+                            shouldDepsIndex[key] = true;
+                            result.shouldDeps.push(decl);
+                        }
+                    });
+                    if (files.length > 0) {
+                        return keepWorking(files.shift());
+                    } else {
+                        return null;
+                    }
+                });
+            }
+            if (files.length > 0) {
+                return keepWorking(files.shift()).then(function() {
+                    return result;
+                });
+            } else {
+                return result;
+            }
         });
-        return result;
     }
 });
 
 function declKey(decl) {
-   return decl.name + (decl.elem ? '__' + decl.elem : '')
-       + (decl.modName ? '_' + decl.modName + (decl.modVal ? '_' + decl.modVal : '') : '');
+   return decl.name + (decl.elem ? '__' + decl.elem : '') +
+       (decl.modName ? '_' + decl.modName + (decl.modVal ? '_' + decl.modVal : '') : '');
 }

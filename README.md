@@ -9,8 +9,9 @@ prepend-modules
 Добавляет js-код для работы модульной системы
 
 **Опции**
-* *String* **source** – Исходный source. Обязательная опция.
-* *String* **target** — Результирующий target. По умолчанию — `?.js`.
+
+ * *String* **source** – Исходный source. Обязательная опция.
+ * *String* **target** — Результирующий target. По умолчанию — `?.js`.
 
 **Пример**
 
@@ -30,10 +31,11 @@ deps-with-modules
 Следует использовать с осторожностью: в bem-bl не хватает зависимостей, потому проект может собраться иначе, чем с помощью bem-tools.
 
 **Опции**
-* *String* **sourceSuffixes** – Суффиксы исходных файлов, дополняющих deps'ы. По умолчанию — `['vanilla.js', 'js']`.
-* *String* **bemdeclTarget** — Исходный bemdecl. По умолчанию — `?.bemdecl.js`.
-* *String* **levelsTarget** — Исходный levels. По умолчанию — `?.levels`.
-* *String* **depsTarget** — Результирующий deps. По умолчанию — `?.deps.js`.
+
+ * *String* **sourceSuffixes** – Суффиксы исходных файлов, дополняющих deps'ы. По умолчанию — `['vanilla.js', 'js']`.
+ * *String* **bemdeclTarget** — Исходный bemdecl. По умолчанию — `?.bemdecl.js`.
+ * *String* **levelsTarget** — Исходный levels. По умолчанию — `?.levels`.
+ * *String* **depsTarget** — Результирующий deps. По умолчанию — `?.deps.js`.
 
 **Пример**
 

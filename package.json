@@ -2,7 +2,7 @@
     "author" : "Marat Dulin <mdevils@yandex.ru>",
     "description" : "Modules ENB Techs",
     "name" : "enb-modules",
-    "version" : "0.0.7",
+    "version" : "0.0.8",
     "contributors": [
         {
             "name": "Marat Dulin",
@@ -12,14 +12,23 @@
     "engines": {
         "node": ">= 0.8.0"
     },
-    "dependencies" : {
+    "dependencies": {
         "inherit": ">=1.0.4",
         "vow": ">=0.3.3",
         "vow-fs": ">=0.1.12",
         "graceful-fs": ">=1.2.1",
         "ym": "0.0.5"
     },
+    "devDependencies": {
+        "jshint": "2.1.3",
+        "jscs": "0.0.12"
+    },
     "peerDependencies": {
         "enb": ">= 0.7.23"
+    },
+    "scripts": {
+        "test" : "npm run-script jshint && npm run-script check-style",
+        "jshint": "./node_modules/.bin/jshint .",
+        "check-style": "./node_modules/jscs/bin/jscs ."
     }
 }
