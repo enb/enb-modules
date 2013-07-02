@@ -160,7 +160,7 @@ var ModulesDepsResolver = inherit(DepsResolver, {
     getDeps: function(decl) {
         var _this = this;
         return this.__base(decl).then(function(result) {
-            var files, suffixesIndex = this._suffixesIndex;
+            var files, suffixesIndex = _this._suffixesIndex;
             if (decl.elem) {
                 files = _this.levels.getElemFiles(decl.name, decl.elem, decl.modName, decl.modVal);
             } else {
