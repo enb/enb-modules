@@ -66,7 +66,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
             bemdeclSource = this._bemdeclTarget,
             bemdeclSourcePath = this.node.resolvePath(bemdeclSource);
         return this.node.requireSources([this._levelsTarget, bemdeclSource]).spread(function(levels) {
-            var depFiles = levels.getFilesBySuffix('deps.js');
+            var depFiles = levels.getFilesBySuffix('deps.js').concat(levels.getFilesBySuffix('deps.yaml'));
             _this._sourceSuffixes.forEach(function(suffix) {
                 depFiles = depFiles.concat(levels.getFilesBySuffix(suffix));
             });
