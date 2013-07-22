@@ -19,7 +19,7 @@
  * ```
  */
 
-var vowFs = require('vow-fs'),
+var vowFs = require('enb/lib/fs/async-fs'),
     path = require('path');
 
 module.exports = require('enb/lib/build-flow').create()

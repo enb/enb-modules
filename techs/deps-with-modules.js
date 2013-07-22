@@ -32,7 +32,7 @@
  */
 var Vow = require('vow'),
     vm = require('vm'),
-    vowFs = require('vow-fs'),
+    vowFs = require('enb/lib/fs/async-fs'),
     DepsResolver = require('enb/lib/deps/deps-resolver'),
     inherit = require('inherit'),
     modules = require('../lib/modules'),
