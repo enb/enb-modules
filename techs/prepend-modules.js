@@ -30,7 +30,7 @@ module.exports = require('enb/lib/build-flow').create()
     .needRebuild(function(cache) {
         return cache.needRebuildFile(
             'modules-file',
-            this._modulesFile = path.join(__dirname, '..', 'node_modules', 'ym', 'modules.js'));
+            this._modulesFile = path.join(__dirname, '..', '..', 'ym', 'modules.js'));
     })
     .saveCache(function(cache) {
         cache.cacheFileInfo('modules-file', this._modulesFile);
