@@ -2,7 +2,7 @@
     "author" : "Marat Dulin <mdevils@yandex.ru>",
     "description" : "Modules ENB Techs",
     "name" : "enb-modules",
-    "version" : "0.0.13",
+    "version" : "0.0.14",
     "contributors": [
         {
             "name": "Marat Dulin",

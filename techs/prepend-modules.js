@@ -42,6 +42,8 @@ module.exports = require('enb/lib/build-flow').create()
                 "modules = module.exports;" +
                 "}\n" +
                 preTargetSource;
+        }, function () {
+            throw new Error('Module system was not found. Please install `ym` npm module: npm install ym');
         });
     })
     .createTech();
