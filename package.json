@@ -17,7 +17,7 @@
         "vow": ">=0.3.3",
         "vow-fs": ">=0.1.12",
         "graceful-fs": ">=1.2.1",
-        "ym": "0.0.7"
+        "ym": "0.0.8"
     },
     "devDependencies": {
         "jshint": "2.1.3",
