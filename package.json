@@ -9,6 +9,10 @@
       "email": "mdevils@yandex.ru"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enb-make/enb-modules"
+  },
   "engines": {
     "node": ">= 0.8.0"
   },
