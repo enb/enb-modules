@@ -30,9 +30,7 @@
  * } ]);
  * ```
  */
-var Vow = require('vow'),
-    vm = require('vm'),
-    vowFs = require('enb/lib/fs/async-fs'),
+var vowFs = require('enb/lib/fs/async-fs'),
     DepsResolver = require('enb/lib/deps/deps-resolver'),
     inherit = require('inherit'),
     modules = require('../lib/modules'),
