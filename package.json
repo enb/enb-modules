@@ -2,15 +2,15 @@
   "author": "Marat Dulin <mdevils@yandex.ru>",
   "description": "Modules ENB Techs",
   "name": "enb-modules",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "contributors": [
     {
       "name": "Marat Dulin",
       "email": "mdevils@yandex.ru"
     },
     {
-      "name" : "Dmitry Filatov",
-      "email" : "dfilatov@yandex-team.ru"
+      "name": "Dmitry Filatov",
+      "email": "dfilatov@yandex-team.ru"
     }
   ],
   "repository": {
