@@ -7,6 +7,10 @@
     {
       "name": "Marat Dulin",
       "email": "mdevils@yandex.ru"
+    },
+    {
+      "name" : "Dmitry Filatov",
+      "email" : "dfilatov@yandex-team.ru"
     }
   ],
   "repository": {
