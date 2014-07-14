@@ -2,7 +2,7 @@
   "author": "Marat Dulin <mdevils@yandex.ru>",
   "description": "Modules ENB Techs",
   "name": "enb-modules",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "contributors": [
     {
       "name": "Marat Dulin",
@@ -29,7 +29,7 @@
   },
   "peerDependencies": {
     "enb": ">= 0.8.22",
-    "ym": ">= 0.0.8"
+    "ym": "~0.1.0"
   },
   "scripts": {
     "test": "npm run-script jshint && npm run-script check-style",
