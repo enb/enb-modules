@@ -37,11 +37,7 @@ module.exports = require('enb/lib/build-flow').create()
     })
     .builder(function(preTargetSource) {
         return vowFs.read(this._modulesFile, 'utf8').then(function(modulesRes) {
-            return modulesRes +
-                "if(typeof module !== 'undefined') {" +
-                "modules = module.exports;" +
-                "}\n" +
-                preTargetSource;
+            return modulesRes + preTargetSource;
         }, function () {
             throw new Error('Module system was not found. Please install `ym` npm module: npm install ym');
         });
