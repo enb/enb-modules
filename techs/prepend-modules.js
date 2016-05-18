@@ -38,7 +38,7 @@ module.exports = require('enb/lib/build-flow').create()
     .builder(function(preTargetSource) {
         return vowFs.read(this._modulesFile, 'utf8').then(function(modulesRes) {
             return modulesRes +
-                "if(window === 'undefined' && typeof module !== 'undefined') {" +
+                "if(typeof window === 'undefined' && typeof module !== 'undefined') {" +
                 "modules = module.exports;" +
                 "}\n" +
                 preTargetSource;
