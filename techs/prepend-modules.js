@@ -38,8 +38,9 @@ module.exports = require('enb/lib/build-flow').create()
     .builder(function(preTargetSource) {
         return vowFs.read(this._modulesFile, 'utf8').then(function(modulesRes) {
             return modulesRes +
-                "if(typeof module !== 'undefined') {" +
-                "modules = module.exports;" +
+                "if(/* hack electron env */ typeof window === 'undefined' && " + 
+                   "/* commonJs */ typeof module !== 'undefined') {" +
+                        "modules = module.exports;" +
                 "}\n" +
                 preTargetSource;
         }, function () {
