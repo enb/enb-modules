@@ -31,7 +31,7 @@
  * ```
  */
 var vowFs = require('enb/lib/fs/async-fs'),
-    DepsResolver = require('enb/lib/deps/deps-resolver'),
+    DepsResolver = require('enb-bem-techs/lib/deps/deps-resolver'),
     inherit = require('inherit'),
     modules = require('../lib/modules'),
     asyncRequire = require('enb/lib/fs/async-require');
