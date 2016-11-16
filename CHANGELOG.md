@@ -1,3 +1,8 @@
+Версия 0.4.0:
+ * Добавлена поддержка `enb@1.x` (@vsesh [#15]).
+
+[#15]: https://github.com/enb/enb-modules/pull/15
+
 Версия 0.3.0:
  * Добавлена поддержка среды исполнения `electron` ([#13](https://github.com/enb/enb-modules/pull/13)).
  * `Node.js` версии `0.8` больше не поддерживается.
