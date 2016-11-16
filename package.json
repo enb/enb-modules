@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "inherit": "~2.1.0",
-    "enb-bem-techs": "^2.2.1"
+    "enb-bem-techs": "2.2.1"
   },
   "devDependencies": {
     "jshint": "2.1.3",
