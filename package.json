@@ -21,7 +21,8 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "inherit": "~2.1.0"
+    "inherit": "~2.1.0",
+    "enb-bem-techs": "2.2.1"
   },
   "devDependencies": {
     "jshint": "2.1.3",
