@@ -132,7 +132,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                             cache.cacheFileInfo('deps-file', depsTargetPath);
                             cache.cacheFileInfo('bemdecl-file', bemdeclSourcePath);
                             cache.cacheFileList('deps-file-list', depFiles);
-                            _this.node.resolveTarget(depsTarget, resolvedDeps);
+                            _this.node.resolveTarget(depsTarget, { deps: resolvedDeps });
                         });
                     });
                 });
