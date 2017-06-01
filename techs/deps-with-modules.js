@@ -50,6 +50,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
             this.getOption('bemdeclTarget', this.node.getTargetName('bemdecl.js')));
         this._levelsTarget = this.node.unmaskTargetName(
             this.getOption('levelsTarget', this.node.getTargetName('levels')));
+        this._extractDependencies = this.getOption('extractDependencies', modules.extractDependencies);
     },
 
     getTargets: function() {
@@ -75,7 +76,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                 delete require.cache[bemdeclSourcePath];
                 return asyncRequire(bemdeclSourcePath).then(function(bemdecl) {
                     var decls = [];
-                    var dep = new ModulesDepsResolver(levels, _this._sourceSuffixes);
+                    var dep = new ModulesDepsResolver(levels, _this._sourceSuffixes, _this._extractDependencies);
 
                     if (bemdecl.blocks) {
                         bemdecl.blocks.forEach(function(block) {
@@ -147,13 +148,14 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
 });
 
 var ModulesDepsResolver = inherit(DepsResolver, {
-    __constructor: function(levels, suffixes) {
+    __constructor: function(levels, suffixes, extractDependencies) {
         this.__base(levels);
         var suffixesIndex = {};
         suffixes.forEach(function(suffix) {
             suffixesIndex[suffix] = true;
         });
         this._suffixesIndex = suffixesIndex;
+        this._extractDependencies = extractDependencies;
     },
     getDeps: function(decl) {
         var _this = this;
@@ -173,7 +175,7 @@ var ModulesDepsResolver = inherit(DepsResolver, {
             });
             function keepWorking(file) {
                 return vowFs.read(file.fullname, 'utf8').then(function(fileContent) {
-                    var extractedDeps = modules.extractDependencies(fileContent);
+                    var extractedDeps = _this._extractDependencies(fileContent);
                     extractedDeps.forEach(function(decl) {
                         var key = declKey(decl);
                         if (!shouldDepsIndex[key]) {
