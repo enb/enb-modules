@@ -14,6 +14,7 @@
  * * *String* **bemdeclTarget** — Исходный bemdecl. По умолчанию — `?.bemdecl.js`.
  * * *String* **levelsTarget** — Исходный levels. По умолчанию — `?.levels`.
  * * *String* **depsTarget** — Результирующий deps. По умолчанию — `?.deps.js`.
+ * * *String* **depsStrategy** — Вид зависимости, `shouldDeps` или `mustDeps`. По умолчанию — `shouldDeps`.
  *
  * **Пример**
  *
@@ -51,6 +52,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
         this._levelsTarget = this.node.unmaskTargetName(
             this.getOption('levelsTarget', this.node.getTargetName('levels')));
         this._extractDependencies = this.getOption('extractDependencies', modules.extractDependencies);
+        this._depsStrategy = this.getOption('depsStrategy', 'shouldDeps');
     },
 
     getTargets: function() {
@@ -76,7 +78,11 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
                 delete require.cache[bemdeclSourcePath];
                 return asyncRequire(bemdeclSourcePath).then(function(bemdecl) {
                     var decls = [];
-                    var dep = new ModulesDepsResolver(levels, _this._sourceSuffixes, _this._extractDependencies);
+                    var dep = new ModulesDepsResolver(
+                            levels,
+                            _this._sourceSuffixes,
+                            _this._extractDependencies,
+                            _this._depsStrategy);
 
                     if (bemdecl.blocks) {
                         bemdecl.blocks.forEach(function(block) {
@@ -148,7 +154,7 @@ module.exports = inherit(require('enb/lib/tech/base-tech'), {
 });
 
 var ModulesDepsResolver = inherit(DepsResolver, {
-    __constructor: function(levels, suffixes, extractDependencies) {
+    __constructor: function(levels, suffixes, extractDependencies, depsStrategy) {
         this.__base(levels);
         var suffixesIndex = {};
         suffixes.forEach(function(suffix) {
@@ -156,11 +162,15 @@ var ModulesDepsResolver = inherit(DepsResolver, {
         });
         this._suffixesIndex = suffixesIndex;
         this._extractDependencies = extractDependencies;
+        this._depsStrategy = depsStrategy;
     },
     getDeps: function(decl) {
         var _this = this;
         return this.__base(decl).then(function(result) {
-            var files, suffixesIndex = _this._suffixesIndex;
+            var files;
+            var suffixesIndex = _this._suffixesIndex;
+            var depsStrategy = _this._depsStrategy;
+
             if (decl.elem) {
                 files = _this.levels.getElemFiles(decl.name, decl.elem, decl.modName, decl.modVal);
             } else {
@@ -169,18 +179,25 @@ var ModulesDepsResolver = inherit(DepsResolver, {
             files = files.filter(function(file) {
                 return !!suffixesIndex[file.suffix];
             });
-            var shouldDepsIndex = {};
-            result.shouldDeps.forEach(function(decl) {
-                shouldDepsIndex[declKey(decl)] = true;
+            var depsIndex = {};
+
+            result[depsStrategy].forEach(function(decl) {
+                depsIndex[declKey(decl)] = true;
             });
+
+            if (depsStrategy === 'mustDeps') {
+                depsIndex[declKey(decl)] = true;
+            }
+
             function keepWorking(file) {
                 return vowFs.read(file.fullname, 'utf8').then(function(fileContent) {
                     var extractedDeps = _this._extractDependencies(fileContent);
                     extractedDeps.forEach(function(decl) {
                         var key = declKey(decl);
-                        if (!shouldDepsIndex[key]) {
-                            shouldDepsIndex[key] = true;
-                            result.shouldDeps.push(decl);
+                        decl.key = key;
+                        if (!depsIndex[key]) {
+                            depsIndex[key] = true;
+                            result[depsStrategy].push(decl);
                         }
                     });
                     if (files.length > 0) {
